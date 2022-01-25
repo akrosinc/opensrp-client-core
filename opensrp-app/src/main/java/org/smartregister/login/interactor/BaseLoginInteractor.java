@@ -1,5 +1,9 @@
 package org.smartregister.login.interactor;
 
+import static org.smartregister.domain.LoginResponse.NO_INTERNET_CONNECTIVITY;
+import static org.smartregister.domain.LoginResponse.UNAUTHORIZED;
+import static org.smartregister.domain.LoginResponse.UNKNOWN_RESPONSE;
+
 import android.content.Context;
 import android.content.DialogInterface;
 
@@ -34,10 +38,6 @@ import java.lang.ref.WeakReference;
 import java.util.TimeZone;
 
 import timber.log.Timber;
-
-import static org.smartregister.domain.LoginResponse.NO_INTERNET_CONNECTIVITY;
-import static org.smartregister.domain.LoginResponse.UNAUTHORIZED;
-import static org.smartregister.domain.LoginResponse.UNKNOWN_RESPONSE;
 
 /**
  * Created by ndegwamartin on 26/06/2018.
@@ -230,15 +230,15 @@ public abstract class BaseLoginInteractor implements BaseLoginContract.Interacto
     }
 
     public Context getApplicationContext() {
-        return mLoginPresenter.getLoginView().getActivityContext();
+        return getLoginView().getActivityContext();
     }
 
     public AllSharedPreferences getSharedPreferences() {
-        return mLoginPresenter.getOpenSRPContext().allSharedPreferences();
+        return mLoginPresenter != null && mLoginPresenter.getOpenSRPContext() != null ? mLoginPresenter.getOpenSRPContext().allSharedPreferences() : null;
     }
 
     public BaseLoginContract.View getLoginView() {
-        return mLoginPresenter.getLoginView();
+        return mLoginPresenter != null ? mLoginPresenter.getLoginView() : null;
     }
 
     public UserService getUserService() {
