@@ -62,6 +62,13 @@ android {
             buildConfigField "String", "OAUTH_CLIENT_ID", '"opensrp-trusted-client"'
             buildConfigField "String", "OAUTH_CLIENT_SECRET", '"O@aTHS#cr3t"'
         }
+        release {
+
+            minifyEnabled false
+
+            buildConfigField "String", "OAUTH_CLIENT_ID", '"opensrp-trusted-client"'
+            buildConfigField "String", "OAUTH_CLIENT_SECRET", '"O@aTHS#cr3t"'
+        }
     }
 
     packagingOptions {
