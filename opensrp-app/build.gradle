@@ -39,6 +39,8 @@ android {
     buildToolsVersion androidBuildToolsVersion
     useLibrary 'org.apache.http.legacy'
 
+    ndkVersion "21.1.6352462"
+
     defaultPublishConfig !isReleaseBuild() ? "debug" : "release"
 
     signingConfigs {
