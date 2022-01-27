@@ -20,6 +20,8 @@ allprojects {
         google()
         jcenter()
         maven { url 'https://maven.fabric.io/public' }
+        maven { url 'https://jitpack.io' }
+
     }
 }
 
@@ -36,6 +38,8 @@ android {
     compileSdkVersion androidCompileSdkVersion
     buildToolsVersion androidBuildToolsVersion
     useLibrary 'org.apache.http.legacy'
+
+    ndkVersion "21.1.6352462"
 
     defaultPublishConfig !isReleaseBuild() ? "debug" : "release"
 
@@ -130,6 +134,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 tasks.withType(Test) {
     jacoco.includeNoLocationClasses = true
+    jacoco.excludes = ['jdk.internal.*']
     testLogging {
         // Enables easier debugging of tests in Github Actions CI
         events TestLogEvent.FAILED
@@ -218,7 +223,7 @@ dependencies {
         exclude group: 'com.google.android', module: 'android'
     }
 
-    implementation('org.smartregister:android-p2p-sync:0.3.7-SNAPSHOT') {
+    implementation('com.github.akrosinc:android-p2p-sync:0.3.7-SNAPSHOT') {
         exclude group: 'com.android.support', module: 'support-v4'
         exclude group: 'com.android.support', module: 'appcompat-v7'
         exclude group: 'android.arch.core', module: 'runtime'
@@ -228,9 +233,9 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
-    implementation 'org.smartregister:opensrp-client-utils:0.0.2-SNAPSHOT'
+    implementation 'com.github.akrosinc:opensrp-client-utils:0.0.2-SNAPSHOT'
 
-    implementation 'org.smartregister:opensrp-plan-evaluator:1.5.1-SNAPSHOT'
+    implementation 'com.github.akrosinc:opensrp-plan-evaluator:1.5.1-SNAPSHOT'
 
     implementation 'xerces:xercesImpl:2.12.0'
 
@@ -330,4 +335,30 @@ coveralls {
     sourceDirs = ["$project.projectDir/src/main/java"]
 }
 
-apply from: '../maven.gradle'
+
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                // Applies the component for the release build variant.
+                from components.release
+
+                // You can then customize attributes of the publication as shown below.
+                groupId = 'com.github.akrosinc'
+                artifactId = POM_SETTING_ARTIFACT_ID
+                version = VERSION_NAME
+            }
+            // Creates a Maven publication called “debug”.
+            debug(MavenPublication) {
+                // Applies the component for the debug build variant.
+                from components.debug
+
+                groupId = 'com.github.akrosinc'
+                artifactId = POM_SETTING_ARTIFACT_ID
+                version =  VERSION_NAME
+            }
+        }
+    }
+}
+//apply from: '../maven.gradle'
